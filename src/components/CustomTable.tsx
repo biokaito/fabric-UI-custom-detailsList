@@ -1,6 +1,7 @@
 import React, { Component, ReactElement } from 'react';
 import { Link } from '@fluentui/react/lib/Link';
 import { initializeIcons } from '@fluentui/react/lib/Icons';
+import { IconButton } from '@fluentui/react/lib/Button';
 import { DetailsList, IColumn, SelectionMode } from '@fluentui/react/lib/DetailsList';
 import { mergeStyles } from '@fluentui/react/lib/Styling';
 import '../Style/CustomTable.css'
@@ -15,49 +16,25 @@ export interface IDetailsListCustomColumnsExampleState {
     isSortedDescending: boolean;
 }
 initializeIcons(undefined, { disableWarnings: true });
-class Table extends Component<{}, IDetailsListCustomColumnsExampleState>{    
+class Table extends Component<{ items: any[], columns: IColumn[] }, IDetailsListCustomColumnsExampleState>{    
     constructor(props : {}){
-        super(props)
+        super(props as any)
         this.state = {
-            fullItems: [
-                {id: 1,name: '0605044440550_VomiNha_1.jpg', validVersion: '02', nextExaminationDate: '20/01/2021'},
-                {id: 2,name: '0605044440550_VomiNha_2.jpg', validVersion: '02', nextExaminationDate: '20/01/2021'},
-                {id: 3,name: '0605044440550_VomiNha_3.jpg', validVersion: '02', nextExaminationDate: '20/01/2021'},
-                {id: 4,name: '0605044440550_VomiNha_4.jpg', validVersion: '02', nextExaminationDate: '20/01/2021'},
-                {id: 5,name: '0605044440550_VomiNha_5.jpg', validVersion: '02', nextExaminationDate: '20/01/2021'},
-                {id: 6,name: '0605044440550_VomiNha_6.jpg', validVersion: '02', nextExaminationDate: '20/01/2021'},
-                {id: 7,name: '0605044440550_VomiNha_7.jpg', validVersion: '02', nextExaminationDate: '20/01/2021'},
-                {id: 8,name: '0605044440550_VomiNha_8.jpg', validVersion: '02', nextExaminationDate: '20/01/2021'},
-                {id: 9,name: '0605044440550_VomiNha_9.jpg', validVersion: '02', nextExaminationDate: '20/01/2021'},
-                {id: 10,name: '0605044440550_VomiNha_10.jpg', validVersion: '02', nextExaminationDate: '20/01/2021'},
-              ],
-            sortedItems : [
-                {id: 1,name: '0605044440550_VomiNha_1.jpg', validVersion: '02', nextExaminationDate: '20/01/2021'},
-                {id: 2,name: '0605044440550_VomiNha_2.jpg', validVersion: '02', nextExaminationDate: '20/01/2021'},
-                {id: 3,name: '0605044440550_VomiNha_3.jpg', validVersion: '02', nextExaminationDate: '20/01/2021'},
-                {id: 4,name: '0605044440550_VomiNha_4.jpg', validVersion: '02', nextExaminationDate: '20/01/2021'},
-                {id: 5,name: '0605044440550_VomiNha_5.jpg', validVersion: '02', nextExaminationDate: '20/01/2021'},
-                {id: 6,name: '0605044440550_VomiNha_6.jpg', validVersion: '02', nextExaminationDate: '20/01/2021'},
-                {id: 7,name: '0605044440550_VomiNha_7.jpg', validVersion: '02', nextExaminationDate: '20/01/2021'},
-                {id: 8,name: '0605044440550_VomiNha_8.jpg', validVersion: '02', nextExaminationDate: '20/01/2021'},
-                {id: 9,name: '0605044440550_VomiNha_9.jpg', validVersion: '02', nextExaminationDate: '20/01/2021'},
-                {id: 10,name: '0605044440550_VomiNha_10.jpg', validVersion: '02', nextExaminationDate: '20/01/2021'},
-              ],
+            fullItems: this.props.items,
+            sortedItems : this.props.items.map(x =>{
+              return x
+            }),
             columns: [],
             isSortedAscending: true,
             isFullItems: false,
             isSortedDescending: false
         }
     }
-    async componentDidMount(){
-        console.log(this.state.fullItems)
-        await this.setState({
+    componentDidMount(){
+        //console.log(this.state.fullItems)
+        this.setState({
             sortedItems : this.state.sortedItems.splice(0,5),
-            columns : [
-                { key: 'column1', name: 'Name', fieldName: 'name', minWidth: 100, maxWidth: 200, isResizable: true, isSortedDescending: false, isSorted: false },
-                { key: 'column2', name: 'Valid Version', fieldName: 'validVersion', minWidth: 100, maxWidth: 200, isResizable: true,isSortedDescending: false, isSorted: false },
-                { key: 'column3', name: 'Next Examination Date', fieldName: 'nextExaminationDate', minWidth: 150, maxWidth: 200, isResizable: true, isSortedDescending: false, isSorted: false },
-            ]
+            columns : this.props.columns
         })
     }
     private _onColumnClickSortedItems = (event: React.MouseEvent<HTMLElement>, column: IColumn): void => {
@@ -107,9 +84,9 @@ class Table extends Component<{}, IDetailsListCustomColumnsExampleState>{
                 col.isSorted = col.key === column.key;
         
                 if (col.isSorted) {
-                col.isSortedDescending = isSortedDescending;
+                  col.isSortedDescending = isSortedDescending;
                 }    
-                return col;
+                  return col;
             }),
         });
       };
@@ -177,10 +154,18 @@ function _renderItemColumn(item: any, index: number, column: IColumn) {
     //console.log(fieldContent)
     switch (column.fieldName) {  
       case 'name':
-        return <Link href="#">{fieldContent}</Link>;
-  
+        return <Link href="#">{fieldContent}</Link>
+      case 'validVersion':
+        return <div style={{display: 'flex' , justifyContent: 'center', alignItems: 'center'}}>
+          <span>{fieldContent}</span>
+        </div>
+      case 'nextExaminationDate':
+        return <div style={{display: 'flex' , justifyContent: 'center', alignItems: 'center', flexDirection: "row", fontSize: 12, marginTop: -8}}>
+          <span style={{fontSize: 13}}>{fieldContent}</span>
+          <IconButton href="#" width="5%" height="5%" iconProps={{ iconName: 'Edit' }} title="Edit" style={{color: 'black'}} />
+        </div>
       default:
-        return <span>{fieldContent}</span>;
+        return <span>{fieldContent}</span>
     }
   }
   
