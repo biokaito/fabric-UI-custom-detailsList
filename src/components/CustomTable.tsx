@@ -6,17 +6,18 @@ import { DetailsList, IColumn, SelectionMode } from '@fluentui/react/lib/Details
 import { mergeStyles } from '@fluentui/react/lib/Styling';
 import '../Style/CustomTable.css'
 import { TooltipHostBase } from '@fluentui/react/lib/Tooltip';
+import { Type } from 'typescript';
 
 export interface IDetailsListCustomColumnsExampleState {
     fullItems: any[];
     sortedItems: any[];
-    columns: IColumn[];
+    columns?: IColumn[];
     isSortedAscending: boolean;
     isFullItems: boolean;
     isSortedDescending: boolean;
 }
 initializeIcons(undefined, { disableWarnings: true });
-class Table extends Component<{ items: any[], columns: IColumn[] }, IDetailsListCustomColumnsExampleState>{    
+class Table extends Component<{ items: any[], columns?: IColumn[] }, IDetailsListCustomColumnsExampleState>{    
     constructor(props : {}){
         super(props as any)
         this.state = {
@@ -53,7 +54,7 @@ class Table extends Component<{ items: any[], columns: IColumn[] }, IDetailsList
         // Reset the items and columns to match the state.
         this.setState({
           sortedItems: sortedItems,
-          columns: columns.map(col => {
+          columns: columns?.map(col => {
             col.isSorted = col.key === column.key;
     
             if (col.isSorted) {
@@ -80,7 +81,7 @@ class Table extends Component<{ items: any[], columns: IColumn[] }, IDetailsList
         // Reset the items and columns to match the state.
         this.setState({
             fullItems: fullItems,
-            columns: columns.map(col => {
+            columns: columns?.map(col => {
                 col.isSorted = col.key === column.key;
         
                 if (col.isSorted) {
@@ -92,6 +93,7 @@ class Table extends Component<{ items: any[], columns: IColumn[] }, IDetailsList
       };
       
     public render(){
+        const { ...rest } = this.props;
         const {sortedItems, columns, fullItems, isFullItems, isSortedAscending} = this.state
         if(!isFullItems){
             return(
@@ -107,9 +109,6 @@ class Table extends Component<{ items: any[], columns: IColumn[] }, IDetailsList
                         styles={controlStyles}
                         compact={true}
                         selectionMode={SelectionMode.none}
-                        ariaLabelForSelectionColumn="Toggle selection"
-                        ariaLabelForSelectAllCheckbox="Toggle selection for all items"
-                        checkButtonAriaLabel="select row"
                     />
                     <Link  
                     onClick={()=>{
@@ -177,7 +176,6 @@ function _copyAndSort<Type>(items: Type[], columnKey: string, isSortedDescending
 const controlStyles = {
     root: {
       maxWidth: '100%',
-
     },
     contentWrapper:{
 
